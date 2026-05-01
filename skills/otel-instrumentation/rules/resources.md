@@ -108,7 +108,7 @@ Both attributes serve different purposes: `service.instance.id` is a logical, op
 > Set `k8s.*` attributes via the Kubernetes downward API in pod specs or let the `k8sattributes` Collector processor resolve them automatically — never set them in application code.
 
 Follow the guidance issued in [Kubernetes deployment](platforms/k8s.md).
-For configuring the `k8sattributes` processor in the Collector, see the [processors](../../../otel-collector/rules/processors.md#kubernetes-attributes) rule in the `otel-collector` skill.
+For configuring the `k8sattributes` processor in the Collector, see the [processors](../../otel-collector/rules/processors.md#kubernetes-attributes) rule in the `otel-collector` skill.
 
 ## Setting resource attributes
 

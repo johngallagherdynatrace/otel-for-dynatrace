@@ -109,7 +109,7 @@ See [spans](./spans.md) for detailed span hygiene rules.
 | Logs lack `trace_id` | Log SDK not connected to the trace context | Ensure the logging bridge reads the active span context — see [logs](./logs.md) |
 | Metrics missing after Collector restart | Cumulative metrics reset to zero; backend may treat the reset as a gap | Use the `cumulativetodelta` processor or wait for the next scrape interval |
 | Resource attributes missing | `resourcedetection` or `k8sattributes` processor not in the pipeline | Add the processors — see [processors](../../otel-collector/rules/processors.md#recommended-processors) |
-| High cardinality warning from the backend | Unparameterized URL paths or unbounded attribute values | Normalize paths in the SDK or Collector — see [sensitive data](./sensitive-data.md#path-parameterization) and the [otel-ottl skill](../../otel-ottl/SKILL.md#normalize-high-cardinality-attributes) |
+| High cardinality warning from the backend | Unparameterized URL paths or unbounded attribute values | Normalize paths in the SDK or Collector — see [sensitive data](./sensitive-data.md#path-parameterization) and the [otel-ottl skill](../../otel-ottl/rules/cardinality.md) |
 
 ## References
 

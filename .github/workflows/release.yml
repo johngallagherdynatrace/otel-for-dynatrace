@@ -169,6 +169,10 @@ jobs:
             git push origin HEAD
           fi
 
+      - name: Publish to Tessl
+        run: |
+          tessl tile publish .
+
       - name: Create tag
         env:
           TAG: ${{ steps.version.outputs.tag }}
@@ -184,10 +188,3 @@ jobs:
           gh release create "${TAG}" \
             --title "${TAG}" \
             --generate-notes
-
-      - name: Publish to Tessl
-        run: |
-          for skill_dir in skills/*/; do
-            echo "Publishing $skill_dir"
-            tessl tile publish "$skill_dir"
-          done
