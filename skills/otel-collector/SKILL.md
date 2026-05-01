@@ -51,6 +51,59 @@ Expert guidance for configuring and deploying the OpenTelemetry Collector to rec
   Always configure `memory_limiter` in production.
   Without it, a burst of telemetry can cause the Collector to OOM and crash.
 
+## Quick start
+
+Minimal working configuration: OTLP receiver → memory limiter → OTLP/gRPC exporter to Dash0.
+
+```yaml
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 400
+    spike_limit_mib: 100
+
+exporters:
+  otlp:
+    endpoint: ingress.eu-west-1.aws.dash0.com:4317
+    headers:
+      Authorization: "Bearer ${env:DASH0_TOKEN}"
+    sending_queue:
+      enabled: true
+      storage: file_storage
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter]
+      exporters: [otlp]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter]
+      exporters: [otlp]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter]
+      exporters: [otlp]
+```
+
+See [exporters](./rules/exporters.md) for full authentication and queue configuration, and [processors](./rules/processors.md) for adding resource detection.
+
+## Configuration workflow
+
+1. **Write config** — define receivers, processors, and exporters; wire them in `service.pipelines`.
+2. **Validate locally** — run `otelcol validate --config=config.yaml` to catch structural errors before deployment.
+3. **Deploy** — choose a deployment method from the [deployment](./rules/deployment.md) rule (Helm, Operator, raw manifests, or Docker Compose).
+4. **Verify** — add the `debug` exporter to a pipeline temporarily and inspect stdout to confirm telemetry is flowing; then remove it before going to production.
+
 ## Quick reference
 
 | What do you need? | Rule |
