@@ -45,6 +45,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: tesslio/setup-tessl@v2
+        with:
+          token: ${{ secrets.TESSL_TOKEN }}
+
       - name: Compute next version
         id: version
         run: |
@@ -180,3 +184,10 @@ jobs:
           gh release create "${TAG}" \
             --title "${TAG}" \
             --generate-notes
+
+      - name: Publish to Tessl
+        run: |
+          for skill_dir in skills/*/; do
+            echo "Publishing $skill_dir"
+            tessl tile publish "$skill_dir"
+          done
