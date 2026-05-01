@@ -8,6 +8,12 @@ npx skills add https://github.com/dash0hq/agent-skills --all
 npx skills add https://github.com/dash0hq/agent-skills --skill otel-semantic-conventions
 ```
 
+## Tessl
+
+```bash
+tessl install dash0/agent-skills
+```
+
 ## Antigravity
 
 Clone and symlink into the cross-client discovery path:
@@ -85,9 +91,3 @@ git clone https://github.com/dash0hq/agent-skills.git ~/.agents/skills/dash0-age
 ```
 
 OpenCode auto-discovers skills from `.agents/skills/`, `.opencode/skills/`, and `.claude/skills/`.
-
-## Tessl
-
-```bash
-tessl install dash0/agent-skills
-```

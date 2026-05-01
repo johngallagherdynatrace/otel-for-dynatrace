@@ -3,6 +3,10 @@
 A collection of skills for AI coding agents to make applications observable with OpenTelemetry and [Dash0](https://www.dash0.com).
 Skills are packaged instructions and scripts that extend agent capabilities, following the [Agent Skills](https://agentskills.io/) format.
 
+> [!TIP]
+> These skills have been greatly improved using [Tessl](https://tessl.io).
+> Try it out for your own agent skills, it's worth it.
+
 ## How to use
 
 **Install with [skills](https://skills.sh/) CLI** (universal, works with any [Agent Skills](https://agentskills.io)-compatible tool):
@@ -13,7 +17,7 @@ npx skills add https://github.com/dash0hq/agent-skills --all
 npx skills add https://github.com/dash0hq/agent-skills --skill otel-semantic-conventions
 ```
 
-For tool-specific installation instructions (Claude Code, Gemini CLI, Cursor, Copilot, and others), see [INSTALL.md](./INSTALL.md).
+For tool-specific installation instructions (Claude Code, Cursor, Tessl, and others), see [INSTALL.md](./INSTALL.md).
 
 ## Usage
 
