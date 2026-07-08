@@ -7,8 +7,8 @@
     "name": "Dynatrace",
     "email": "john.gallagher@dynatrace.com"
   },
-  "homepage": "https://github.com/johngallagherdynatrace/agent-skills",
-  "repository": "https://github.com/johngallagherdynatrace/agent-skills",
+  "homepage": "https://github.com/johngallagherdynatrace/otel-for-dynatrace",
+  "repository": "https://github.com/johngallagherdynatrace/otel-for-dynatrace",
   "license": "Apache-2.0",
   "keywords": [
     "claude-code",

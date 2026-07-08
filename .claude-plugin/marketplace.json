@@ -16,11 +16,11 @@
       "category": "observability",
       "source": {
         "source": "github",
-        "repo": "johngallagherdynatrace/agent-skills",
+        "repo": "johngallagherdynatrace/otel-for-dynatrace",
         "ref": "main",
         "sha": "ef9b85e42052566fb546a5ecd70f2ce16ae18b9e"
       },
-      "homepage": "https://github.com/johngallagherdynatrace/agent-skills"
+      "homepage": "https://github.com/johngallagherdynatrace/otel-for-dynatrace"
     }
   ]
 }
