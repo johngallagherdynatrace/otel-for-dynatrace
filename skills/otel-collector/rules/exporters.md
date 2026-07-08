@@ -4,7 +4,7 @@ impact: CRITICAL
 tags:
   - exporters
   - otlp
-  - dash0
+  - dynatrace
   - authentication
 ---
 
@@ -24,14 +24,15 @@ Fall back to OTLP/HTTP only when network proxies do not support HTTP/2.
 | gRPC | `otlp` | 4317 | Default for all Collector-to-backend exports |
 | HTTP | `otlphttp` | 4318 | Network proxies that block HTTP/2 |
 
-## OTLP/gRPC exporter to Dash0
+## OTLP exporter to Dynatrace
 
-Use the OTLP/gRPC exporter to send traces, metrics, and logs to Dash0.
+Use the `otlphttp` exporter (HTTP/protobuf) to send traces, metrics, and logs to Dynatrace.
+Dynatrace primarily supports OTLP/HTTP on port 4318.
 
 ### Where to get configuration values
 
-1. **OTLP Endpoint**: In Dash0: [Settings → Organization → Endpoints](https://app.dash0.com/settings/endpoints?s=eJwtyzEOgCAQRNG7TG1Cb29h5REMcVclIUDYsSLcXUxsZ95vcJgbxNObEjNET_9Eok9wY2FIlzlNUnJItM_GYAM2WK7cqmgdlbcDE0yjHlRZfr7KuDJj2W-yoPf-AmNVJ2I%3D)
-2. **Auth Token**: In Dash0: [Settings → Auth Tokens → Create Token](https://app.dash0.com/settings/auth-tokens)
+1. **OTLP Endpoint**: In Dynatrace: Settings → OpenTelemetry and OpenTracing → Copy the OTLP endpoint URL.
+2. **Auth Token**: In Dynatrace: Settings → Access Tokens → Generate token with scopes `openTelemetryTrace.ingest`, `metrics.ingest`, `logs.ingest`.
 
 ### Minimal configuration
 
@@ -40,11 +41,11 @@ exporters:
   otlp:
     endpoint: <OTLP_ENDPOINT>
     headers:
-      Authorization: "Bearer <AUTH_TOKEN>"
+      Authorization: "Api-Token <AUTH_TOKEN>"
 ```
 
-Replace `<OTLP_ENDPOINT>` with your Dash0 OTLP endpoint (e.g., `ingress.eu-west-1.aws.dash0.com:4317`).
-Replace `<AUTH_TOKEN>` with your Dash0 auth token; see the [Authentication](#authentication) section for how to optimally set up the authentication token.
+Replace `<OTLP_ENDPOINT>` with your Dynatrace environment OTLP endpoint (e.g., `https://<environment-id>.live.dynatrace.com/api/v2/otlp`).
+Replace `<AUTH_TOKEN>` with your Dynatrace API token; see the [Authentication](#authentication) section for how to optimally set up the authentication token.
 
 ### Production configuration
 
@@ -55,7 +56,7 @@ exporters:
   otlp:
     endpoint: <OTLP_ENDPOINT>
     headers:
-      Authorization: "Bearer <AUTH_TOKEN>"
+      Authorization: "Api-Token <AUTH_TOKEN>"
     compression: gzip
     timeout: 30s
     retry_on_failure:
@@ -73,7 +74,7 @@ exporters:
 ### Compression
 
 Enable `gzip` compression to reduce network bandwidth.
-The Dash0 ingress endpoint supports gzip-compressed OTLP/gRPC.
+The Dynatrace OTLP endpoint supports gzip-compressed OTLP/HTTP.
 
 ```yaml
 # GOOD — reduces bandwidth by 60-80 percent
@@ -81,7 +82,7 @@ exporters:
   otlp:
     endpoint: <OTLP_ENDPOINT>
     headers:
-      Authorization: "Bearer <AUTH_TOKEN>"
+      Authorization: "Api-Token <AUTH_TOKEN>"
     compression: gzip
 
 # BAD — uncompressed traffic wastes bandwidth
@@ -89,7 +90,7 @@ exporters:
   otlp:
     endpoint: <OTLP_ENDPOINT>
     headers:
-      Authorization: "Bearer <AUTH_TOKEN>"
+      Authorization: "Api-Token <AUTH_TOKEN>"
     compression: none
 ```
 
@@ -114,7 +115,7 @@ exporters:
   otlp:
     endpoint: <OTLP_ENDPOINT>
     headers:
-      Authorization: "Bearer <AUTH_TOKEN>"
+      Authorization: "Api-Token <AUTH_TOKEN>"
     sending_queue:
       enabled: true
       num_consumers: 10
@@ -136,10 +137,10 @@ In-memory queues lose buffered data when the Collector restarts.
 Do not hardcode auth tokens in configuration files.
 Reference an environment variable instead.
 
-Create a dedicated auth token with `Ingesting` permissions only.
-The Collector needs to send telemetry, not query or manage the organization.
-In Dash0, create the token at [Settings → Auth Tokens → Create Token](https://app.dash0.com/settings/auth-tokens) and select the `Ingesting` scope.
-See [auth tokens](https://www.dash0.com/documentation/dash0/key-concepts/auth-tokens) for details on available permission scopes.
+Create a dedicated API token with ingest permissions only.
+The Collector needs to send telemetry, not query or manage the environment.
+In Dynatrace, create the token at Settings → Access Tokens → Generate token and select the scopes `openTelemetryTrace.ingest`, `metrics.ingest`, and `logs.ingest`.
+See [Dynatrace OTel documentation](https://docs.dynatrace.com/docs/observe/opentelemetry) for details on available token scopes.
 
 ```yaml
 # GOOD — token from environment variable
@@ -147,25 +148,25 @@ exporters:
   otlp:
     endpoint: <OTLP_ENDPOINT>
     headers:
-      Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
+      Authorization: "Api-Token ${env:DT_API_TOKEN}"
 
 # BAD — hardcoded token in config
 exporters:
   otlp:
     endpoint: <OTLP_ENDPOINT>
     headers:
-      Authorization: "Bearer dh0_1a2b3c4d5e6f..."
+      Authorization: "Api-Token dt0c01.xxx..."
 ```
 
 Set the environment variable in your deployment manifest:
 
 ```yaml
 env:
-  - name: DASH0_AUTH_TOKEN
+  - name: DT_API_TOKEN
     valueFrom:
       secretKeyRef:
-        name: dash0-credentials
-        key: auth-token
+        name: dynatrace-credentials
+        key: api-token
 ```
 
 ## OTLP/HTTP exporter
@@ -177,12 +178,12 @@ exporters:
   otlphttp:
     endpoint: https://<OTLP_ENDPOINT>
     headers:
-      Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
+      Authorization: "Api-Token ${env:DT_API_TOKEN}"
     compression: gzip
 ```
 
 The OTLP/HTTP exporter uses port 4318 by default.
-Check your Dash0 endpoint documentation for the correct URL.
+Check your Dynatrace environment OTLP endpoint for the correct URL.
 
 ## Debug exporter
 
@@ -202,7 +203,7 @@ exporters:
   otlp:
     endpoint: <OTLP_ENDPOINT>
     headers:
-      Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
+      Authorization: "Api-Token ${env:DT_API_TOKEN}"
 
 service:
   pipelines:
@@ -227,10 +228,10 @@ Each exporter receives a copy of the data independently.
 
 ```yaml
 exporters:
-  otlp/dash0:
+  otlp/dynatrace:
     endpoint: <OTLP_ENDPOINT>
     headers:
-      Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
+      Authorization: "Api-Token ${env:DT_API_TOKEN}"
   otlp/secondary:
     endpoint: secondary-backend:4317
     tls:
@@ -241,10 +242,10 @@ service:
     traces:
       receivers: [otlp]
       processors: [memory_limiter]
-      exporters: [otlp/dash0, otlp/secondary]
+      exporters: [otlp/dynatrace, otlp/secondary]
 ```
 
-Use named instances (`otlp/dash0`, `otlp/secondary`) to configure multiple exporters of the same type.
+Use named instances (`otlp/dynatrace`, `otlp/secondary`) to configure multiple exporters of the same type.
 
 ## Anti-patterns
 

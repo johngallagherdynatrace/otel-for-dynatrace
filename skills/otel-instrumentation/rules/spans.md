@@ -613,4 +613,3 @@ afterEach(() => {
 - [Instrumentation Score Specification](https://github.com/instrumentation-score/spec) — vendor-neutral scoring for OpenTelemetry instrumentation quality
 - [Semantic Conventions: Traces](https://opentelemetry.io/docs/specs/semconv/general/trace/) — general span conventions
 - [HTTP Spans](https://opentelemetry.io/docs/specs/semconv/http/http-spans/) — HTTP-specific span and status rules
-- [Dash0 Semantic Conventions Explainer](https://www.dash0.com/knowledge/otel-semantic-conventions-explainer) — comprehensive guide

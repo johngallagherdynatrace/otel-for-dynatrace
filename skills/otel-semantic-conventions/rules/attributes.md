@@ -24,7 +24,7 @@ Wrong attributes — or attributes at the wrong level — make telemetry unquery
 2. **No custom attributes unless necessary. All custom attributes must be namespaced.**
    Custom attributes fragment querying and break tooling.
    Only create them for truly domain-specific concepts that have no registry equivalent.
-   When you must, prefix with your reverse-DNS company namespace: `com.company.domain.attribute_name` (e.g., `com.acme.order.priority`, `dash0.queue.depth`).
+   When you must, prefix with your reverse-DNS company namespace: `com.company.domain.attribute_name` (e.g., `com.acme.order.priority`, `com.acme.queue.depth`).
    An attribute name without a namespace prefix is invalid — never use bare names like `order_priority` or `queue_depth`.
 3. **Low cardinality in metric attributes and span names; high cardinality in span attributes.**
    Span names and metric attribute values must be bounded.
@@ -277,4 +277,3 @@ Full registry: https://opentelemetry.io/docs/specs/semconv/registry/attributes/
 
 - [Attribute Registry](https://opentelemetry.io/docs/specs/semconv/registry/attributes/) — the single source of truth for all attribute definitions
 - [Semantic Conventions Specification](https://opentelemetry.io/docs/specs/semconv/) — full specification across all signals
-- [Dash0 Semantic Conventions Explainer](https://www.dash0.com/knowledge/otel-semantic-conventions-explainer) — comprehensive guide to understanding and applying conventions

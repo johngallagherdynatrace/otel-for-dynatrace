@@ -185,7 +185,7 @@ OTEL_TRACES_EXPORTER=otlp
 OTEL_METRICS_EXPORTER=otlp
 OTEL_LOGS_EXPORTER=otlp
 OTEL_EXPORTER_OTLP_ENDPOINT=https://<OTLP_ENDPOINT>
-OTEL_EXPORTER_OTLP_HEADERS=Authorization=Bearer YOUR_AUTH_TOKEN
+OTEL_EXPORTER_OTLP_HEADERS=Authorization=Api-Token YOUR_API_TOKEN
 NODE_OPTIONS=--import @opentelemetry/auto-instrumentations-node/register
 ```
 
@@ -194,6 +194,5 @@ NODE_OPTIONS=--import @opentelemetry/auto-instrumentations-node/register
 - [`service.instance.id` semantic conventions](https://opentelemetry.io/docs/specs/semconv/registry/attributes/service/#service-instance-id)
 - [Resource semantic conventions](https://opentelemetry.io/docs/specs/semconv/resource/)
 - [OTel SDK configuration](https://opentelemetry.io/docs/languages/sdk-configuration/general/)
-- [Service attributes best practices](https://www.dash0.com/guides/opentelemetry-service-attributes-best-practices)
 - [Attribute placement guidance](../../otel-semantic-conventions/rules/attributes.md)
 - [Kubernetes deployment](platforms/k8s.md)

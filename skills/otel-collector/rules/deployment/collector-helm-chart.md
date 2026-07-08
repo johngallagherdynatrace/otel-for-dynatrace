@@ -79,7 +79,7 @@ config:
     otlp:
       endpoint: <OTLP_ENDPOINT>
       headers:
-        Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
+        Authorization: "Api-Token ${env:DT_API_TOKEN}"
       sending_queue:
         enabled: true
         queue_size: 5000
@@ -109,7 +109,7 @@ config:
 
 extraEnvsFrom:
   - secretRef:
-      name: dash0-credentials
+      name: dynatrace-credentials
 ```
 
 Install with:
@@ -193,7 +193,7 @@ config:
     otlp:
       endpoint: <OTLP_ENDPOINT>
       headers:
-        Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
+        Authorization: "Api-Token ${env:DT_API_TOKEN}"
       compression: gzip
       sending_queue:
         enabled: true
@@ -225,7 +225,7 @@ config:
 
 extraEnvsFrom:
   - secretRef:
-      name: dash0-credentials
+      name: dynatrace-credentials
 ```
 
 ### Image selection
@@ -301,11 +301,6 @@ Run through this checklist after adding the `debug` exporter:
    Verify that the metrics reaching the exporter use the expected names (e.g., `http.server.request.duration`, not `http.server.duration`) and units (e.g., `s`, not `ms`).
 5. **Spans have expected attributes and parent-child relationships.**
    Check that business attributes set in application code (e.g., `order.id`) appear on spans, and that `CLIENT` spans are children of `SERVER` spans (not root spans).
-6. **Dash0 dataset header is set.**
-   If the organization uses multiple [datasets](https://www.dash0.com/documentation/dash0/key-concepts/datasets), verify the `Dash0-Dataset` header in the Helm values.
-   The debug exporter shows telemetry data, not outgoing headers — check the values file directly.
-   See [Dash0 dataset routing](#dash0-dataset-routing).
-
 ### Remove the debug exporter before deploying to production
 
 The `debug` exporter serializes every telemetry item to stdout.
@@ -313,23 +308,6 @@ In production this wastes CPU and I/O, and risks logging sensitive attribute val
 Remove the debug values overlay and upgrade the release once validation is complete.
 
 See [debug exporter](../exporters.md#debug-exporter) for verbosity levels and configuration.
-
-## Dash0 dataset routing
-
-If the Dash0 organization uses multiple [datasets](https://www.dash0.com/documentation/dash0/key-concepts/datasets), add the `Dash0-Dataset` header to the OTLP exporter to route telemetry to the correct dataset.
-
-```yaml
-config:
-  exporters:
-    otlp:
-      endpoint: <OTLP_ENDPOINT>
-      headers:
-        Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
-        Dash0-Dataset: "my-dataset"
-```
-
-A missing or incorrect `Dash0-Dataset` header causes telemetry to land in the default dataset.
-The debug exporter shows telemetry data, not outgoing headers — verify the header in the Helm values directly.
 
 ## Anti-patterns
 

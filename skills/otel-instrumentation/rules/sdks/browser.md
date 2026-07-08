@@ -20,80 +20,27 @@ Instrument web applications to monitor performance, user sessions, requests, and
 - **End-to-End Tracing**: Connect frontend interactions with backend traces
 - **Custom Instrumentation**: Monitor specific user interactions or business logic workflows
 
-## Option 1: Dash0 SDK Web (Recommended)
+## Option 1: OpenTelemetry Browser SDK (Recommended)
 
-100% open source. Designed to work with Dash0. Simplest setup with sensible defaults.
+Standard OpenTelemetry instrumentation for browsers.
+Works with any OTLP-compatible backend including Dynatrace.
 
-### Prerequisites
+**Prerequisites:**
+- Your Dynatrace OTLP HTTP endpoint (format: `https://<environment-id>.live.dynatrace.com/api/v2/otlp`)
+- A Dynatrace API token with scope `openTelemetryTrace.ingest`
 
-1. **OTLP Endpoint**: Your observability platform's HTTP endpoint
-   - In Dash0: [Settings → Organization → Endpoints → "OTLP via HTTP"](https://app.dash0.com/settings/endpoints?s=eJwtyzEOgCAQRNG7TG1Cb29h5REMcVclIUDYsSLcXUxsZ95vcJgbxNObEjNET_9Eok9wY2FIlzlNUnJItM_GYAM2WK7cqmgdlbcDE0yjHlRZfr7KuDJj2W-yoPf-AmNVJ2I%3D)
-   - Format: `https://<region>.your-platform.com`
-2. **Auth Token**: API token for telemetry ingestion
-   - In Dash0: [Settings → Auth Tokens → Create Token](https://app.dash0.com/settings/auth-tokens)
-
-**Security**: Browser auth tokens are exposed in client code. Use a dedicated auth token with:
-
-- Limited dataset access
-- `Ingesting` permissions only
-- No access to sensitive data or admin functions
-
-### Installation
-
+**Install:**
 ```bash
-npm install @dash0/sdk-web
+npm install @opentelemetry/auto-instrumentations-web \
+  @opentelemetry/sdk-trace-web \
+  @opentelemetry/exporter-trace-otlp-http \
+  @opentelemetry/resources \
+  @opentelemetry/semantic-conventions
 ```
 
-### Initialization
-
-Initialize as early as possible in your application:
-
-```javascript
-import { init } from '@dash0/sdk-web';
-
-init({
-  serviceName: 'my-frontend',
-  endpoint: {
-    url: 'https://<OTLP_ENDPOINT>',
-    authToken: 'YOUR_AUTH_TOKEN',
-  },
-});
-```
-
-For Next.js, use the `instrumentation-client.js` file.
-
-### Features
-
-Auto-instrumentation captures without code modifications:
-
-- Page loads and navigation timing
-- Fetch/XHR requests with trace propagation
-- User sessions
-- JavaScript errors and promise rejections
-
-### Customization
-
-```javascript
-// Add custom attributes
-import { addAttributes } from '@dash0/sdk-web';
-addAttributes({ 'user.tier': 'premium' });
-
-// Identify users
-import { setUser } from '@dash0/sdk-web';
-setUser({ id: 'user-123' });
-
-// Report custom errors
-import { reportError } from '@dash0/sdk-web';
-reportError(new Error('Custom error'));
-
-// Send custom events
-import { sendEvent } from '@dash0/sdk-web';
-sendEvent('checkout.completed', { order_id: '123' });
-```
-
-### Resources
-
-- [GitHub Repository](https://github.com/dash0hq/dash0-sdk-web)
+> [!NOTE]
+> Dynatrace also offers a JavaScript RUM agent for full Real User Monitoring (session replay, user actions, Core Web Vitals).
+> That agent is separate from OTel instrumentation — use it when you need RUM capabilities beyond distributed tracing.
 
 ## Option 2: OpenTelemetry JS SDK
 
@@ -141,7 +88,7 @@ provider.addSpanProcessor(
   new BatchSpanProcessor(
     new OTLPTraceExporter({
       url: 'https://<OTLP_ENDPOINT>/v1/traces',
-      headers: { Authorization: 'Bearer YOUR_AUTH_TOKEN' },
+      headers: { Authorization: 'Api-Token YOUR_API_TOKEN' },
     }),
   ),
 );
@@ -182,7 +129,8 @@ npm run build
 
 ### Testing
 
-Open your website in a browser. Network tab will show calls to the Dash0 ingestion API.
+Open your website in a browser.
+Network tab will show calls to the Dynatrace OTLP ingestion endpoint.
 
 ### Resources
 

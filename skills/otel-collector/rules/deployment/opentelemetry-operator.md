@@ -66,11 +66,11 @@ spec:
       valueFrom:
         fieldRef:
           fieldPath: spec.nodeName
-    - name: DASH0_AUTH_TOKEN
+    - name: DT_API_TOKEN
       valueFrom:
         secretKeyRef:
-          name: dash0-credentials
-          key: auth-token
+          name: dynatrace-credentials
+          key: api-token
   config:
     receivers:
       otlp:
@@ -88,7 +88,7 @@ spec:
       otlp:
         endpoint: <OTLP_ENDPOINT>
         headers:
-          Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
+          Authorization: "Api-Token ${env:DT_API_TOKEN}"
         sending_queue:
           enabled: true
           queue_size: 5000
@@ -136,11 +136,11 @@ spec:
     maxReplicas: 10
     targetCPUUtilization: 70
   env:
-    - name: DASH0_AUTH_TOKEN
+    - name: DT_API_TOKEN
       valueFrom:
         secretKeyRef:
-          name: dash0-credentials
-          key: auth-token
+          name: dynatrace-credentials
+          key: api-token
   config:
     receivers:
       otlp:
@@ -179,7 +179,7 @@ spec:
       otlp:
         endpoint: <OTLP_ENDPOINT>
         headers:
-          Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
+          Authorization: "Api-Token ${env:DT_API_TOKEN}"
         compression: gzip
         sending_queue:
           enabled: true
@@ -361,7 +361,7 @@ spec:
       otlp:
         endpoint: <OTLP_ENDPOINT>
         headers:
-          Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
+          Authorization: "Api-Token ${env:DT_API_TOKEN}"
     service:
       pipelines:
         traces:
@@ -403,11 +403,6 @@ Run through this checklist after adding the `debug` exporter:
    Verify that the metrics reaching the exporter use the expected names (e.g., `http.server.request.duration`, not `http.server.duration`) and units (e.g., `s`, not `ms`).
 5. **Spans have expected attributes and parent-child relationships.**
    Check that business attributes set in application code (e.g., `order.id`) appear on spans, and that `CLIENT` spans are children of `SERVER` spans (not root spans).
-6. **Dash0 dataset header is set.**
-   If the organization uses multiple [datasets](https://www.dash0.com/documentation/dash0/key-concepts/datasets), verify the `Dash0-Dataset` header in the `OpenTelemetryCollector` CR.
-   The debug exporter shows telemetry data, not outgoing headers — check the CR directly.
-   See [Dash0 dataset routing](#dash0-dataset-routing).
-
 ### Remove the debug exporter before deploying to production
 
 The `debug` exporter serializes every telemetry item to stdout.
@@ -415,28 +410,6 @@ In production this wastes CPU and I/O, and risks logging sensitive attribute val
 Remove `debug` from all pipeline `exporters` lists and the `exporters` section in the CR once validation is complete.
 
 See [debug exporter](../exporters.md#debug-exporter) for verbosity levels and configuration.
-
-## Dash0 dataset routing
-
-If the Dash0 organization uses multiple [datasets](https://www.dash0.com/documentation/dash0/key-concepts/datasets), add the `Dash0-Dataset` header to the OTLP exporter in the `OpenTelemetryCollector` CR.
-
-```yaml
-apiVersion: opentelemetry.io/v1beta1
-kind: OpenTelemetryCollector
-metadata:
-  name: otel-gateway
-spec:
-  config:
-    exporters:
-      otlp:
-        endpoint: <OTLP_ENDPOINT>
-        headers:
-          Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
-          Dash0-Dataset: "my-dataset"
-```
-
-A missing or incorrect `Dash0-Dataset` header causes telemetry to land in the default dataset.
-The debug exporter shows telemetry data, not outgoing headers — verify the header in the `OpenTelemetryCollector` CR directly.
 
 ## Anti-patterns
 

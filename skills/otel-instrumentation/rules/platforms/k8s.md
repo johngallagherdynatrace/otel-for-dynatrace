@@ -11,7 +11,7 @@ tags:
 # Kubernetes deployment
 
 OpenTelemetry-instrumented applications running in Kubernetes need pod metadata injected as resource attributes for proper contextualization of traces, metrics, and logs.
-This file covers the pod-spec changes needed for application containers and the Dash0 Kubernetes Operator approach.
+This file covers the pod-spec changes needed for application containers and the Dynatrace Operator approach.
 
 For the full list of required and recommended resource attributes (including `service.name`, `service.namespace`, `service.version`, `service.instance.id`, and `deployment.environment.name`), see [resource attributes](../resources.md).
 In Kubernetes, every application pod has more than one instance in aggregate across replicas — always set `service.instance.id` and the other [service identity](../resources.md#service-identity) attributes so telemetry can be attributed to a specific pod.
@@ -112,12 +112,13 @@ For `k8sattributes` processor configuration (metadata extraction, pod associatio
 For `resource` processor configuration (`k8s.cluster.name`, `k8s.cluster.uid`), see [processors](../../../otel-collector/rules/processors.md).
 For Collector deployment manifests (DaemonSet, Deployment, RBAC), see [raw manifests](../../../otel-collector/rules/deployment/raw-manifests.md).
 
-## Dash0 Kubernetes Operator
+## Dynatrace Operator
 
-Use the [Dash0 Kubernetes Operator](https://github.com/dash0hq/dash0-operator) to automate instrumentation and resource attribute injection for all workloads in a cluster.
-The operator handles SDK injection, collector configuration, and Kubernetes metadata enrichment without manual pod spec changes.
+Use the [Dynatrace Operator](https://github.com/Dynatrace/dynatrace-operator) to automate OTel SDK injection and resource attribute injection for all workloads in a cluster.
+The operator injects instrumentation via CodeModules using a CSI driver, without requiring per-workload annotations.
 
-When the Dash0 Kubernetes Operator manages the workload, skip the manual downward API and Collector processor setup above.
+When the Dynatrace Operator manages the workload with `applicationMonitoring`, skip the manual downward API setup above — the operator injects the required environment variables automatically.
+See [Dynatrace Operator](../../../otel-collector/rules/deployment/dynatrace-operator.md) for full setup instructions.
 
 ## Anti-patterns
 
@@ -136,7 +137,6 @@ When the Dash0 Kubernetes Operator manages the workload, skip the manual downwar
 
 ## References
 
-- [Kubernetes attributes best practices](https://www.dash0.com/guides/opentelemetry-kubernetes-attributes-best-practices)
 - [Kubernetes semantic conventions](https://opentelemetry.io/docs/specs/semconv/resource/k8s/)
 - [Kubernetes downward API](https://kubernetes.io/docs/concepts/workloads/pods/downward-api/)
 - [Resource attributes](../resources.md)

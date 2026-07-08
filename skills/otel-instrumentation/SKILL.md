@@ -3,7 +3,7 @@ name: 'otel-instrumentation'
 description: Configures trace spans, defines custom metrics, sets up log exporters, and optimizes sampling strategies for OpenTelemetry instrumentation. Use when instrumenting applications with traces, metrics, or logs. Triggers on requests for observability, telemetry, tracing, metrics collection, logging integration, or OTel setup.
 license: MIT
 metadata:
-  author: dash0
+  author: dynatrace
   version: '2.0.0'
   workflow_type: 'advisory'
   supports-traces: "true"
@@ -44,7 +44,6 @@ Expert guidance for implementing high-quality, cost-efficient OpenTelemetry tele
 
 - [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
 - [Semantic Conventions](https://opentelemetry.io/docs/specs/semconv/)
-- [Dash0 Integration Hub](https://www.dash0.com/hub/integrations)
 
 ## Getting started
 

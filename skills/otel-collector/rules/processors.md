@@ -73,7 +73,7 @@ exporters:
   otlp:
     endpoint: <OTLP_ENDPOINT>
     headers:
-      Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
+      Authorization: "Api-Token ${env:DT_API_TOKEN}"
     sending_queue:
       enabled: true
       num_consumers: 10
@@ -391,9 +391,7 @@ service:
 
 - [Memory limiter processor](https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/memorylimiterprocessor)
 - [File storage extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/storage/filestorage)
-- [Why the batch processor is going away](https://www.dash0.com/blog/why-the-opentelemetry-batch-processor-is-going-away-eventually)
 - [Filter processor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/filterprocessor)
 - [Resource detection processor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/resourcedetectionprocessor)
 - [Kubernetes attributes processor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/k8sattributesprocessor)
 - [Resource processor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/resourceprocessor)
-- [Kubernetes attributes best practices](https://www.dash0.com/guides/opentelemetry-kubernetes-attributes-best-practices)

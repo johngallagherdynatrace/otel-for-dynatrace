@@ -200,18 +200,18 @@ Set the Secret's `stringData.token` field accordingly.
 
 Outside Kubernetes, store the token in a secrets manager or an untracked `.env` file (listed in `.gitignore`).
 
-#### Dash0 auth tokens
+#### Dynatrace API tokens
 
-In Dash0, create auth tokens at [Settings → Auth Tokens → Create Token](https://app.dash0.com/settings/auth-tokens).
-Auth tokens operate at the organization level and grant access to all permitted resources within that organization.
+In Dynatrace, create API tokens at Settings → Access Tokens → Generate token.
+Select scopes `openTelemetryTrace.ingest`, `metrics.ingest`, and `logs.ingest` for a Collector ingest token.
 
-Apply the principle of least privilege when choosing permissions:
+Apply the principle of least privilege when choosing scopes:
 
-- **Backend services** — create a token with `Ingesting` permissions only.
+- **Backend services** — create a token with only the ingest scopes listed above.
   Backend tokens are stored server-side and are not exposed to end users, but limiting scope reduces the impact of a leak.
-- **Browser and client-side SDKs** — create a separate, dedicated token with `Ingesting` permissions only and limited dataset access.
+- **Browser and client-side SDKs** — create a separate, dedicated token with `openTelemetryTrace.ingest` scope only.
   Browser tokens are embedded in client code and visible to anyone who inspects the page source.
   Never reuse a backend token for browser instrumentation.
 
 Revoke tokens immediately if they are compromised or no longer needed.
-See [auth tokens](https://www.dash0.com/documentation/dash0/key-concepts/auth-tokens) for full details.
+See [Dynatrace OTel documentation](https://docs.dynatrace.com/docs/observe/opentelemetry) for full details.

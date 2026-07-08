@@ -45,10 +45,9 @@ All environment variables that control the SDK behavior:
 ### Where to get configuration values
 
 1. **OTLP Endpoint**: Your observability platform's OTLP endpoint
-   - In Dash0: [Settings → Organization → Endpoints](https://app.dash0.com/settings/endpoints?s=eJwtyzEOgCAQRNG7TG1Cb29h5REMcVclIUDYsSLcXUxsZ95vcJgbxNObEjNET_9Eok9wY2FIlzlNUnJItM_GYAM2WK7cqmgdlbcDE0yjHlRZfr7KuDJj2W-yoPf-AmNVJ2I%3D)
    - Format: `https://<region>.your-platform.com`
 2. **Auth Token**: API token for telemetry ingestion
-   - In Dash0: [Settings → Auth Tokens → Create Token](https://app.dash0.com/settings/auth-tokens)
+   - In Dynatrace: Settings → Access Tokens → Generate token with scopes `openTelemetryTrace.ingest`, `metrics.ingest`, and `logs.ingest`.
 3. **Service Name**: Choose a descriptive name (e.g., `order-api`, `checkout-service`)
 
 ## Configuration
@@ -100,13 +99,13 @@ export OTEL_LOGS_EXPORTER="otlp"
 
 ```bash
 export OTEL_EXPORTER_OTLP_ENDPOINT="https://<OTLP_ENDPOINT>"
-export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Bearer YOUR_AUTH_TOKEN"
+export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Api-Token YOUR_API_TOKEN"
 ```
 
 ### 5. Optional: target specific dataset
 
 ```bash
-export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Bearer YOUR_AUTH_TOKEN,Dash0-Dataset=my-dataset"
+export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Api-Token YOUR_API_TOKEN"
 ```
 
 ## Complete setup
@@ -124,7 +123,7 @@ export OTEL_LOGS_EXPORTER="otlp"
 
 # Configure endpoint
 export OTEL_EXPORTER_OTLP_ENDPOINT="https://<OTLP_ENDPOINT>"
-export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Bearer YOUR_AUTH_TOKEN"
+export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Api-Token YOUR_API_TOKEN"
 
 bundle exec rails server
 ```
@@ -140,7 +139,7 @@ OTEL_TRACES_EXPORTER=otlp
 OTEL_METRICS_EXPORTER=otlp
 OTEL_LOGS_EXPORTER=otlp
 OTEL_EXPORTER_OTLP_ENDPOINT=https://<OTLP_ENDPOINT>
-OTEL_EXPORTER_OTLP_HEADERS=Authorization=Bearer YOUR_AUTH_TOKEN
+OTEL_EXPORTER_OTLP_HEADERS=Authorization=Api-Token YOUR_API_TOKEN
 ```
 
 **Run with:**
@@ -182,7 +181,7 @@ See [resource attributes](../resources.md) for the full list of required and rec
 
 ## Kubernetes setup
 
-See [Kubernetes deployment](../platforms/k8s.md) for pod metadata injection, resource attributes, and Dash0 Kubernetes Operator guidance.
+See [Kubernetes deployment](../platforms/k8s.md) for pod metadata injection, resource attributes, and Dynatrace Operator guidance.
 
 ## Supported libraries
 
@@ -403,4 +402,4 @@ export OTEL_TRACES_EXPORTER="otlp"
 - [OpenTelemetry Ruby Documentation](https://opentelemetry.io/docs/languages/ruby/)
 - [OpenTelemetry Ruby Contrib](https://github.com/open-telemetry/opentelemetry-ruby-contrib)
 - [Environment Variable Specification](https://opentelemetry.io/docs/specs/otel/configuration/sdk-environment-variables/)
-- [Dash0 Kubernetes Operator](https://github.com/dash0hq/dash0-operator)
+- [Dynatrace Operator](https://github.com/Dynatrace/dynatrace-operator)

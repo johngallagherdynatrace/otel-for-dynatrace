@@ -2,7 +2,7 @@
 name: otel-ottl
 description: OpenTelemetry Transformation Language (OTTL) expert. Use when writing or debugging OTTL expressions for any OpenTelemetry Collector component that supports OTTL (processors, connectors, receivers, exporters). Triggers on tasks involving telemetry transformation, filtering, attribute manipulation, data redaction, sampling policies, routing, or Collector configuration. Covers syntax, contexts, functions, error handling, and performance.
 metadata:
-  author: dash0
+  author: dynatrace
   version: '1.0.0'
 ---
 
@@ -163,7 +163,7 @@ replace_pattern(span.attributes["url.path"], "/\\d+", "/{id}") where span.attrib
 
 ## References
 
-- [OTTL Guide](https://www.dash0.com/guides/opentelemetry-transformation-language-ottl)
+- [OpenTelemetry Transformation Language](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/pkg/ottl/README.md)
 - [OTTL Specification](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/pkg/ottl)
 - [OTTL Functions Reference](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/pkg/ottl/ottlfuncs)
 - [OTTL Playground](https://ottl.run)

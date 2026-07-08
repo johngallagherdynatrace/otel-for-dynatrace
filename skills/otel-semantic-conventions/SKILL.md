@@ -2,7 +2,7 @@
 name: otel-semantic-conventions
 description: OpenTelemetry Semantic Conventions expert. Use when selecting, applying, or reviewing telemetry attributes. Triggers on tasks involving attribute selection, semantic convention compliance, attribute migration, or custom attribute decisions. Covers the attribute registry, naming patterns, attribute placement, and versioning. For span names, span kinds, and span status codes, see the otel-instrumentation skill.
 metadata:
-  author: dash0
+  author: dynatrace
   version: '1.0.0'
 ---
 
@@ -19,15 +19,14 @@ The [Attribute Registry](https://opentelemetry.io/docs/specs/semconv/registry/at
 |-------------------------------------|-----------------------------------------------------------------------|-----------------------------------------------------------------|
 | [attributes](./rules/attributes.md) | Attribute registry, selection, placement, common attributes by domain | Choosing or reviewing attributes; HTTP/DB/messaging/RPC attributes; attribute placement (resource vs span) |
 | [versioning](./rules/versioning.md) | Semconv versioning, stability, migration                              | Semconv version migration                                       |
-| [dash0](./rules/dash0.md)           | Dash0 derived attributes and feature dependencies                     | Dash0 derived attributes                                        |
+| [dynatrace](./rules/dynatrace.md)   | Dynatrace derived attributes and Davis AI feature dependencies        | Dynatrace derived attributes                                    |
 
 ## Official documentation
 
 - [Attribute Registry](https://opentelemetry.io/docs/specs/semconv/registry/attributes/)
 - [Semantic Conventions Specification](https://opentelemetry.io/docs/specs/semconv/)
 - [Semantic Conventions Repository](https://github.com/open-telemetry/semantic-conventions)
-- [Dash0 Semantic Conventions](https://www.dash0.com/documentation/dash0/semantic-conventions)
-- [Dash0 Semantic Conventions Explainer](https://www.dash0.com/knowledge/otel-semantic-conventions-explainer)
+- [Dynatrace OTel semantic conventions](https://docs.dynatrace.com/docs/observe/opentelemetry/opentelemetry-traces/opentelemetry-ingest/ingesting-traces-with-opentelemetry-api#dt-attributes)
 
 ## How to select the right attribute
 

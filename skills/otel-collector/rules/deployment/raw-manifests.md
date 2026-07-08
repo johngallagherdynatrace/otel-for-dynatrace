@@ -13,7 +13,7 @@ tags:
 # Raw Kubernetes manifests
 
 Use raw manifests when you need full control over every resource, or in environments where Helm and operators are not available.
-For most Kubernetes deployments, prefer the [Collector Helm chart](./collector-helm-chart.md), the [OpenTelemetry Operator](./opentelemetry-operator.md), or the [Dash0 Kubernetes Operator](./dash0-operator.md).
+For most Kubernetes deployments, prefer the [Collector Helm chart](./collector-helm-chart.md), the [OpenTelemetry Operator](./opentelemetry-operator.md), or the [Dynatrace Operator](./dynatrace-operator.md).
 
 ## Agent vs gateway
 
@@ -32,7 +32,7 @@ Deploy an agent DaemonSet for local collection (host metrics, pod logs) and a ga
 The agent forwards to the gateway via OTLP.
 
 ```
-Applications → Agent (DaemonSet) → Gateway (Deployment) → Dash0
+Applications → Agent (DaemonSet) → Gateway (Deployment) → Dynatrace
                  ↑                       ↑
           host metrics,            enrichment, sampling,
           pod logs                 queuing, export
@@ -138,11 +138,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-            - name: DASH0_AUTH_TOKEN
+            - name: DT_API_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: dash0-credentials
-                  key: auth-token
+                  name: dynatrace-credentials
+                  key: api-token
           resources:
             requests:
               cpu: 200m
@@ -239,11 +239,11 @@ spec:
               containerPort: 8888
               protocol: TCP
           env:
-            - name: DASH0_AUTH_TOKEN
+            - name: DT_API_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: dash0-credentials
-                  key: auth-token
+                  name: dynatrace-credentials
+                  key: api-token
           resources:
             requests:
               cpu: 500m
@@ -383,7 +383,7 @@ services:
     volumes:
       - ./otel-collector-config.yaml:/etc/otelcol/config.yaml:ro
     environment:
-      - DASH0_AUTH_TOKEN=${DASH0_AUTH_TOKEN}
+      - DT_API_TOKEN=${DT_API_TOKEN}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:13133/"]
@@ -429,7 +429,7 @@ exporters:
   otlp:
     endpoint: <OTLP_ENDPOINT>
     headers:
-      Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
+      Authorization: "Api-Token ${env:DT_API_TOKEN}"
 
 service:
   pipelines:
@@ -479,11 +479,6 @@ Run through this checklist after adding the `debug` exporter:
    Verify that the metrics reaching the exporter use the expected names (e.g., `http.server.request.duration`, not `http.server.duration`) and units (e.g., `s`, not `ms`).
 5. **Spans have expected attributes and parent-child relationships.**
    Check that business attributes set in application code (e.g., `order.id`) appear on spans, and that `CLIENT` spans are children of `SERVER` spans (not root spans).
-6. **Dash0 dataset header is set.**
-   If the organization uses multiple [datasets](https://www.dash0.com/documentation/dash0/key-concepts/datasets), verify the `Dash0-Dataset` header in the ConfigMap.
-   The debug exporter shows telemetry data, not outgoing headers — check the ConfigMap directly.
-   See [Dash0 dataset routing](#dash0-dataset-routing).
-
 ### Remove the debug exporter before deploying to production
 
 The `debug` exporter serializes every telemetry item to stdout.
@@ -491,22 +486,6 @@ In production this wastes CPU and I/O, and risks logging sensitive attribute val
 Remove `debug` from all pipeline `exporters` lists and the `exporters` section in the ConfigMap once validation is complete.
 
 See [debug exporter](../exporters.md#debug-exporter) for verbosity levels and configuration.
-
-## Dash0 dataset routing
-
-If the Dash0 organization uses multiple [datasets](https://www.dash0.com/documentation/dash0/key-concepts/datasets), add the `Dash0-Dataset` header to the OTLP exporter in the Collector configuration.
-
-```yaml
-exporters:
-  otlp:
-    endpoint: <OTLP_ENDPOINT>
-    headers:
-      Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
-      Dash0-Dataset: "my-dataset"
-```
-
-A missing or incorrect `Dash0-Dataset` header causes telemetry to land in the default dataset.
-The debug exporter shows telemetry data, not outgoing headers — verify the header in the ConfigMap directly.
 
 ## Anti-patterns
 
@@ -530,7 +509,6 @@ The debug exporter shows telemetry data, not outgoing headers — verify the hea
 - [Deployment patterns](../deployment.md)
 - [Collector Helm chart](./collector-helm-chart.md)
 - [OpenTelemetry Operator](./opentelemetry-operator.md)
-- [Dash0 Kubernetes Operator](./dash0-operator.md)
+- [Dynatrace Operator](./dynatrace-operator.md)
 - [Collector deployment](https://opentelemetry.io/docs/collector/deployment/)
 - [Collector on Kubernetes](https://opentelemetry.io/docs/collector/deployment/kubernetes/)
-- [Kubernetes attributes best practices](https://www.dash0.com/guides/opentelemetry-kubernetes-attributes-best-practices)

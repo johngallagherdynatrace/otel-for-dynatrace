@@ -10,17 +10,17 @@ tags:
 
 # Next.js Instrumentation
 
-Full-stack OpenTelemetry setup for Next.js 13+ with App Router. Server-side uses Node SDK, client-side uses Dash0 SDK.
+Full-stack OpenTelemetry setup for Next.js 13+ with App Router.
+Server-side uses Node SDK, client-side uses the OpenTelemetry browser SDK.
 
 ## Prerequisites
 
 - Next.js 13+ with App Router
-- **OTLP Endpoint**: Your observability platform's HTTP endpoint
-  - In Dash0: [Settings → Organization → Endpoints → "OTLP via HTTP"](https://app.dash0.com/settings/endpoints?s=eJwtyzEOgCAQRNG7TG1Cb29h5REMcVclIUDYsSLcXUxsZ95vcJgbxNObEjNET_9Eok9wY2FIlzlNUnJItM_GYAM2WK7cqmgdlbcDE0yjHlRZfr7KuDJj2W-yoPf-AmNVJ2I%3D)
-  - Format: `https://<region>.your-platform.com`
-- **Auth Token**: API token for telemetry ingestion
-  - In Dash0: [Settings → Auth Tokens → Create Token](https://app.dash0.com/settings/auth-tokens)
-  - For browser telemetry, use a token with limited permissions (Ingesting only)
+- **OTLP Endpoint**: Your Dynatrace environment OTLP endpoint.
+  In Dynatrace: Settings → OpenTelemetry and OpenTracing → copy the OTLP ingest endpoint URL.
+  Format: `https://<environment-id>.live.dynatrace.com/api/v2/otlp`.
+- **Auth Token**: A Dynatrace API token for telemetry ingestion.
+  In Dynatrace: Settings → Access Tokens → Generate token with scopes `openTelemetryTrace.ingest`, `metrics.ingest`, and `logs.ingest`.
 
 ## Quick Start
 
@@ -38,7 +38,9 @@ npm install @opentelemetry/api \
   @opentelemetry/exporter-logs-otlp-http \
   @opentelemetry/resources \
   @opentelemetry/semantic-conventions \
-  @dash0/sdk-web
+  @opentelemetry/auto-instrumentations-web \
+  @opentelemetry/sdk-trace-web \
+  @opentelemetry/exporter-trace-otlp-http
 ```
 
 ### 2. Create `.env.local`
@@ -85,7 +87,7 @@ export async function register() {
 
     const exporterHeaders: Record<string, string> = {};
     if (OTEL_AUTH_TOKEN) {
-      exporterHeaders['Authorization'] = `Bearer ${OTEL_AUTH_TOKEN}`;
+      exporterHeaders['Authorization'] = `Api-Token ${OTEL_AUTH_TOKEN}`;
     }
 
     const resource = resourceFromAttributes({
@@ -170,24 +172,42 @@ export async function register() {
 ### 4. Create `src/instrumentation-client.ts` (Client)
 
 ```typescript
-import { init, addSignalAttribute, sendEvent } from '@dash0/sdk-web';
+import { WebTracerProvider, BatchSpanProcessor } from '@opentelemetry/sdk-trace-web';
+import { getWebAutoInstrumentations } from '@opentelemetry/auto-instrumentations-web';
+import { registerInstrumentations } from '@opentelemetry/instrumentation';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import { resourceFromAttributes } from '@opentelemetry/resources';
+import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 
-init({
-  serviceName: 'my-nextjs-app-frontend',
-  endpoint: {
-    url: process.env.NEXT_PUBLIC_OTEL_ENDPOINT || 'http://localhost:4318',
-    authToken: process.env.NEXT_PUBLIC_OTEL_AUTH_TOKEN || 'dev-token',
-  },
-  propagateTraceHeadersCorsURLs: [
-    /\/api\/.*/, // Match your API routes
-  ],
+const provider = new WebTracerProvider({
+  resource: resourceFromAttributes({
+    [ATTR_SERVICE_NAME]: 'my-nextjs-app-frontend',
+    'deployment.environment': process.env.NODE_ENV || 'development',
+  }),
 });
 
-// Add default attributes for all telemetry
-addSignalAttribute('app.version', '1.0.0');
-addSignalAttribute('app.environment', process.env.NODE_ENV || 'development');
+provider.addSpanProcessor(
+  new BatchSpanProcessor(
+    new OTLPTraceExporter({
+      url: `${process.env.NEXT_PUBLIC_OTEL_ENDPOINT || 'http://localhost:4318'}/v1/traces`,
+      headers: {
+        Authorization: `Api-Token ${process.env.NEXT_PUBLIC_OTEL_AUTH_TOKEN || ''}`,
+      },
+    }),
+  ),
+);
 
-export { addSignalAttribute, sendEvent };
+provider.register();
+
+registerInstrumentations({
+  instrumentations: [
+    getWebAutoInstrumentations({
+      '@opentelemetry/instrumentation-fetch': {
+        propagateTraceHeaderCorsUrls: [/\/api\/.*/],
+      },
+    }),
+  ],
+});
 ```
 
 ### 5. Add CORS Headers to `next.config.ts`
@@ -253,7 +273,6 @@ Client-side env vars are inlined at build time. Changes won't take effect withou
 ### Package API Notes
 
 - Use `resourceFromAttributes` (not `new Resource()`)
-- Use `addSignalAttribute` (not `addAttributes`) for Dash0 SDK
 
 ## Custom Telemetry Helper
 
@@ -502,12 +521,12 @@ On startup, you should see:
 
 Browser DevTools → Network → Filter by "v1/traces" or "v1/logs" to see OTLP exports.
 
-### Check Dash0
+### Check Dynatrace
 
-Navigate to Dash0 → Explore → filter by `service.name = "my-nextjs-app"`.
+Navigate to Dynatrace → Distributed traces → filter by `service.name = "my-nextjs-app"`.
 
 ## Resources
 
 - [Next.js Instrumentation Docs](https://nextjs.org/docs/app/api-reference/file-conventions/instrumentation)
-- [Dash0 SDK Web](https://github.com/dash0hq/dash0-sdk-web)
+- [OpenTelemetry JS browser SDK](https://opentelemetry.io/docs/languages/js/getting-started/browser/)
 - [OpenTelemetry Node.js](https://opentelemetry.io/docs/languages/js/getting-started/nodejs/)

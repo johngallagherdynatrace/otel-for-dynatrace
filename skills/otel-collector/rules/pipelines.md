@@ -70,16 +70,16 @@ service:
     traces/application:
       receivers: [otlp]
       processors: [memory_limiter, k8sattributes]
-      exporters: [otlp/dash0]
+      exporters: [otlp/dynatrace]
     traces/infrastructure:
       receivers: [otlp/infra]
       processors: [memory_limiter]
-      exporters: [otlp/dash0]
+      exporters: [otlp/dynatrace]
 ```
 
 ## Complete working configuration
 
-This configuration accepts OTLP telemetry, applies recommended processors, and exports to Dash0.
+This configuration accepts OTLP telemetry, applies recommended processors, and exports to Dynatrace.
 
 ```yaml
 receivers:
@@ -110,7 +110,7 @@ exporters:
   otlp:
     endpoint: <OTLP_ENDPOINT>
     headers:
-      Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
+      Authorization: "Api-Token ${env:DT_API_TOKEN}"
     compression: gzip
     retry_on_failure:
       enabled: true
@@ -151,8 +151,8 @@ service:
       address: 0.0.0.0:8888
 ```
 
-Replace `<OTLP_ENDPOINT>` with your Dash0 OTLP endpoint.
-Set the `DASH0_AUTH_TOKEN` environment variable from a Kubernetes secret or your deployment configuration.
+Replace `<OTLP_ENDPOINT>` with your Dynatrace OTLP endpoint.
+Set the `DT_API_TOKEN` environment variable from a Kubernetes secret or your deployment configuration.
 
 ## Connectors
 
@@ -206,10 +206,10 @@ Each exporter receives an independent copy of the data.
 
 ```yaml
 exporters:
-  otlp/dash0:
+  otlp/dynatrace:
     endpoint: <OTLP_ENDPOINT>
     headers:
-      Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
+      Authorization: "Api-Token ${env:DT_API_TOKEN}"
   otlp/secondary:
     endpoint: secondary-backend:4317
     tls:
@@ -220,7 +220,7 @@ service:
     traces:
       receivers: [otlp]
       processors: [memory_limiter]
-      exporters: [otlp/dash0, otlp/secondary]
+      exporters: [otlp/dynatrace, otlp/secondary]
 ```
 
 Fan-out doubles memory and network usage per additional exporter.
@@ -270,7 +270,7 @@ See the validation section in your deployment model:
 - [Collector Helm chart](./deployment/collector-helm-chart.md#validating-the-setup-with-the-debug-exporter)
 - [OpenTelemetry Operator](./deployment/opentelemetry-operator.md#validating-the-setup-with-the-debug-exporter)
 - [Raw Kubernetes manifests](./deployment/raw-manifests.md#validating-the-setup-with-the-debug-exporter)
-- [Dash0 Operator](./deployment/dash0-operator.md#validating-the-setup)
+- [Dynatrace Operator](./deployment/dynatrace-operator.md#validating-the-setup)
 
 For debug exporter configuration and verbosity levels, see [exporters](./exporters.md#debug-exporter).
 

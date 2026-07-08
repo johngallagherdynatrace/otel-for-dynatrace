@@ -51,26 +51,18 @@ Only use experimental attributes when no stable alternative exists, and add a co
 
 For the full list of attribute changes, see the [common attributes reference](./attributes.md#most-common-span-attributes).
 
-## Dash0 semantic convention upgrades
+## Dynatrace semantic convention handling
 
-Dash0 automatically normalizes incoming telemetry to a configured semantic convention version at ingestion time. This means:
+Dynatrace accepts telemetry using both old and new OpenTelemetry semantic convention naming at ingestion time.
+This means:
 
-- **Attribute renames** are applied automatically (e.g., `http.status_code` → `http.response.status_code`)
-- **Attribute relocation** moves attributes to their correct level (e.g., `service.name` from span to resource)
-- **Metric names** are standardized (e.g., `http.server.duration` → `http.server.request.duration`)
-- **Type conversions** are applied where required by the spec
+- Services instrumented with older semconv naming (e.g., `http.method`) and services using the current stable naming (e.g., `http.request.method`) are both ingested and queryable.
+- You do not need to upgrade all services simultaneously — Dynatrace normalises incoming telemetry and maps both naming schemes to a common internal representation.
 
-Dash0 offers three upgrade strategies per dataset:
-
-| Strategy | Behavior |
-|---|---|
-| **Latest** | Continuously migrates to the most recent semantic convention version |
-| **Specific version** | Locks to a stable version (e.g., 1.20.0) for consistency |
-| **Disabled** | Preserves raw telemetry without transformation |
-
-This means you can upgrade your instrumentation libraries at your own pace — Dash0 handles the normalization. See [Dash0 Semantic Convention Upgrades](https://www.dash0.com/documentation/dash0/semantic-conventions/opentelemetry-semantic-convention-upgrades) for configuration details.
+Upgrade your instrumentation libraries at your own pace.
+See [Dynatrace OTel ingestion documentation](https://docs.dynatrace.com/docs/observe/opentelemetry) for the current list of supported semantic convention versions.
 
 ## References
 
 - [Semantic Conventions Repository](https://github.com/open-telemetry/semantic-conventions) — source YAML models, version tags, and changelogs
-- [Dash0 Semantic Convention Upgrades](https://www.dash0.com/documentation/dash0/semantic-conventions/opentelemetry-semantic-convention-upgrades) — automatic convention version management
+- [Dynatrace OTel documentation](https://docs.dynatrace.com/docs/observe/opentelemetry)

@@ -106,7 +106,7 @@ exporters:
   otlp:
     endpoint: <OTLP_ENDPOINT>
     headers:
-      Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
+      Authorization: "Api-Token ${env:DT_API_TOKEN}"
 
 service:
   pipelines:
@@ -184,7 +184,7 @@ exporters:
   otlp:
     endpoint: <OTLP_ENDPOINT>
     headers:
-      Authorization: "Bearer ${env:DASH0_AUTH_TOKEN}"
+      Authorization: "Api-Token ${env:DT_API_TOKEN}"
     compression: gzip
     sending_queue:
       enabled: true

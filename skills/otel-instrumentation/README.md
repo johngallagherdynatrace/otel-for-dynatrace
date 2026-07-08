@@ -30,7 +30,7 @@ otel-instrumentation/
 Install the skill:
 
 ```bash
-npx skills add dash0/otel-instrumentation
+npx skills add dynatrace/otel-instrumentation
 ```
 
 The skill activates automatically when working on observability tasks.
@@ -50,7 +50,7 @@ The skill activates automatically when working on observability tasks.
 | [dotnet](./rules/sdks/dotnet.md) | HIGH | .NET auto-instrumentation setup |
 | [ruby](./rules/sdks/ruby.md) | HIGH | Ruby instrumentation setup |
 | [php](./rules/sdks/php.md) | HIGH | PHP auto-instrumentation setup |
-| [browser](./rules/sdks/browser.md) | HIGH | Browser instrumentation with Dash0 SDK |
+| [browser](./rules/sdks/browser.md) | HIGH | Browser instrumentation with OpenTelemetry browser SDK |
 | [nextjs](./rules/sdks/nextjs.md) | HIGH | Next.js full-stack instrumentation (App Router) |
 
 ## Rule File Structure
@@ -85,8 +85,8 @@ tags:
 ## Quick Start
 
 **Get your credentials:**
-- **OTLP Endpoint**: In Dash0: [Settings → Organization → Endpoints](https://app.dash0.com/settings/endpoints?s=eJwtyzEOgCAQRNG7TG1Cb29h5REMcVclIUDYsSLcXUxsZ95vcJgbxNObEjNET_9Eok9wY2FIlzlNUnJItM_GYAM2WK7cqmgdlbcDE0yjHlRZfr7KuDJj2W-yoPf-AmNVJ2I%3D)
-- **Auth Token**: In Dash0: [Settings → Auth Tokens → Create Token](https://app.dash0.com/settings/auth-tokens)
+- **OTLP Endpoint**: In Dynatrace: Settings → OpenTelemetry and OpenTracing → copy the OTLP ingest endpoint URL (format: `https://<environment-id>.live.dynatrace.com/api/v2/otlp`).
+- **Auth Token**: In Dynatrace: Settings → Access Tokens → Generate token with scopes `openTelemetryTrace.ingest`, `metrics.ingest`, and `logs.ingest`.
 
 **Node.js:**
 ```bash
@@ -104,16 +104,26 @@ node app.js
 
 **Browser:**
 ```bash
-npm install @dash0/sdk-web
+npm install @opentelemetry/auto-instrumentations-web \
+  @opentelemetry/sdk-trace-web \
+  @opentelemetry/exporter-trace-otlp-http
 ```
 
 ```javascript
-import { init } from "@dash0/sdk-web";
+import { WebTracerProvider, BatchSpanProcessor } from '@opentelemetry/sdk-trace-web';
+import { getWebAutoInstrumentations } from '@opentelemetry/auto-instrumentations-web';
+import { registerInstrumentations } from '@opentelemetry/instrumentation';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 
-init({
-  serviceName: "my-frontend",
-  endpoint: { url: "https://<OTLP_ENDPOINT>", authToken: "<AUTH_TOKEN>" }
-});
+const provider = new WebTracerProvider();
+provider.addSpanProcessor(
+  new BatchSpanProcessor(new OTLPTraceExporter({
+    url: 'https://<environment-id>.live.dynatrace.com/api/v2/otlp/v1/traces',
+    headers: { Authorization: 'Api-Token <AUTH_TOKEN>' },
+  })),
+);
+provider.register();
+registerInstrumentations({ instrumentations: [getWebAutoInstrumentations()] });
 ```
 
 ## Key Principles
@@ -125,8 +135,7 @@ init({
 ## Resources
 
 - [OpenTelemetry Docs](https://opentelemetry.io/docs/)
-- [Dash0 Integration Hub](https://www.dash0.com/hub/integrations)
-- [Dash0 Guides](https://www.dash0.com/guides?category=opentelemetry)
+- [Dynatrace OTel documentation](https://docs.dynatrace.com/docs/observe/opentelemetry)
 
 ## Contributing
 

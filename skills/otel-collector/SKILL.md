@@ -1,9 +1,9 @@
 ---
 name: otel-collector
-description: Expert guidance for configuring and deploying the OpenTelemetry Collector. Use when setting up a Collector pipeline, configuring receivers, exporters, or processors, deploying a Collector to Kubernetes or Docker, or forwarding telemetry to Dash0. Triggers on requests involving collector, pipeline, OTLP receiver, exporter, or Dash0 collector setup.
+description: Expert guidance for configuring and deploying the OpenTelemetry Collector. Use when setting up a Collector pipeline, configuring receivers, exporters, or processors, deploying a Collector to Kubernetes or Docker, or forwarding telemetry to Dynatrace. Triggers on requests involving collector, pipeline, OTLP receiver, exporter, or Dynatrace collector setup.
 license: MIT
 metadata:
-  author: dash0
+  author: dynatrace
   version: '1.0.0'
   workflow_type: 'advisory'
   supports-traces: "true"
@@ -20,11 +20,11 @@ Expert guidance for configuring and deploying the OpenTelemetry Collector to rec
 | Rule | Description |
 |------|-------------|
 | [receivers](./rules/receivers.md) | Receivers — OTLP, Prometheus, filelog, hostmetrics |
-| [exporters](./rules/exporters.md) | Exporters — OTLP/gRPC to Dash0, debug, authentication |
+| [exporters](./rules/exporters.md) | Exporters — OTLP/HTTP to Dynatrace, debug, authentication |
 | [processors](./rules/processors.md) | Processors — memory limiter, resource detection, ordering, sending queue |
 | [pipelines](./rules/pipelines.md) | Pipelines — service section, per-signal configuration, connectors |
 | [deployment](./rules/deployment.md) | Deployment — agent vs gateway patterns, deployment method selection |
-| [dash0-operator](./rules/deployment/dash0-operator.md) | Dash0 Kubernetes Operator — automated instrumentation, Collector management, Dash0 export |
+| [dynatrace-operator](./rules/deployment/dynatrace-operator.md) | Dynatrace Operator — automated OTel SDK injection via CodeModules, Dynatrace entity linking |
 | [collector-helm-chart](./rules/deployment/collector-helm-chart.md) | Collector Helm chart — presets, modes, image selection |
 | [opentelemetry-operator](./rules/deployment/opentelemetry-operator.md) | OpenTelemetry Operator — Collector CRD, auto-instrumentation, sidecar |
 | [raw-manifests](./rules/deployment/raw-manifests.md) | Raw Kubernetes manifests — DaemonSet, Deployment, RBAC, Docker Compose |
@@ -52,7 +52,7 @@ Expert guidance for configuring and deploying the OpenTelemetry Collector to rec
 
 ## Quick start
 
-Minimal working configuration: OTLP receiver → memory limiter → OTLP/gRPC exporter to Dash0.
+Minimal working configuration: OTLP receiver → memory limiter → OTLP/HTTP exporter to Dynatrace.
 
 ```yaml
 receivers:
@@ -71,9 +71,9 @@ processors:
 
 exporters:
   otlp:
-    endpoint: ingress.eu-west-1.aws.dash0.com:4317
+    endpoint: https://<environment-id>.live.dynatrace.com/api/v2/otlp
     headers:
-      Authorization: "Bearer ${env:DASH0_TOKEN}"
+      Authorization: "Api-Token ${env:DT_API_TOKEN}"
     sending_queue:
       enabled: true
       storage: file_storage
@@ -110,18 +110,18 @@ See [exporters](./rules/exporters.md) for full authentication and queue configur
 | Accept OTLP telemetry from applications | [receivers](./rules/receivers.md) |
 | Scrape Prometheus endpoints | [receivers](./rules/receivers.md) |
 | Collect log files or host metrics | [receivers](./rules/receivers.md) |
-| Send telemetry to Dash0 | [exporters](./rules/exporters.md) |
+| Send telemetry to Dynatrace | [exporters](./rules/exporters.md) |
 | Configure retry, queue, or compression | [exporters](./rules/exporters.md) |
 | Set processor ordering | [processors](./rules/processors.md) |
 | Add Kubernetes or cloud metadata | [processors](./rules/processors.md) |
 | Wire receivers → processors → exporters | [pipelines](./rules/pipelines.md) |
 | Complete working configuration | [pipelines](./rules/pipelines.md) |
-| Validate the pipeline with the debug exporter | [collector-helm-chart](./rules/deployment/collector-helm-chart.md), [opentelemetry-operator](./rules/deployment/opentelemetry-operator.md), [raw-manifests](./rules/deployment/raw-manifests.md), or [dash0-operator](./rules/deployment/dash0-operator.md) |
+| Validate the pipeline with the debug exporter | [collector-helm-chart](./rules/deployment/collector-helm-chart.md), [opentelemetry-operator](./rules/deployment/opentelemetry-operator.md), [raw-manifests](./rules/deployment/raw-manifests.md), or [dynatrace-operator](./rules/deployment/dynatrace-operator.md) |
 | Deploy as DaemonSet or Deployment | [raw-manifests](./rules/deployment/raw-manifests.md) |
 | Deploy with Helm | [collector-helm-chart](./rules/deployment/collector-helm-chart.md) |
 | Deploy with the OTel Operator | [opentelemetry-operator](./rules/deployment/opentelemetry-operator.md) |
-| Deploy with the Dash0 Operator | [dash0-operator](./rules/deployment/dash0-operator.md) |
-| Auto-instrument applications in Kubernetes | [opentelemetry-operator](./rules/deployment/opentelemetry-operator.md) or [dash0-operator](./rules/deployment/dash0-operator.md) |
+| Deploy with the Dynatrace Operator | [dynatrace-operator](./rules/deployment/dynatrace-operator.md) |
+| Auto-instrument applications in Kubernetes | [opentelemetry-operator](./rules/deployment/opentelemetry-operator.md) or [dynatrace-operator](./rules/deployment/dynatrace-operator.md) |
 | Local development with Docker Compose | [raw-manifests](./rules/deployment/raw-manifests.md) |
 | Reduce trace volume | [sampling](./rules/sampling.md) |
 | Keep errors and slow traces, drop the rest | [sampling](./rules/sampling.md) |
@@ -134,4 +134,4 @@ See [exporters](./rules/exporters.md) for full authentication and queue configur
 - [OpenTelemetry Collector documentation](https://opentelemetry.io/docs/collector/)
 - [Collector configuration](https://opentelemetry.io/docs/collector/configuration/)
 - [Collector contrib components](https://github.com/open-telemetry/opentelemetry-collector-contrib)
-- [Dash0 Integration Hub](https://www.dash0.com/hub/integrations)
+- [Dynatrace OTel documentation](https://docs.dynatrace.com/docs/observe/opentelemetry)
