@@ -1,14 +1,14 @@
 {
-  "name": "dash0-agent-skills",
-  "displayName": "Dash0 OpenTelemetry skills",
+  "name": "dynatrace-agent-skills",
+  "displayName": "Dynatrace OpenTelemetry skills",
   "description": "OpenTelemetry skills and reference documentation for AI coding assistants",
   "version": "v1.3.0",
   "author": {
-    "name": "Dash0",
-    "email": "support@dash0.com"
+    "name": "Dynatrace",
+    "email": "john.gallagher@dynatrace.com"
   },
-  "homepage": "https://github.com/dash0hq/agent-skills",
-  "repository": "https://github.com/dash0hq/agent-skills",
+  "homepage": "https://github.com/johngallagherdynatrace/agent-skills",
+  "repository": "https://github.com/johngallagherdynatrace/agent-skills",
   "license": "Apache-2.0",
   "keywords": [
     "claude-code",
