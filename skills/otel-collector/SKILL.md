@@ -3,7 +3,7 @@ name: otel-collector
 description: Expert guidance for configuring and deploying the OpenTelemetry Collector. Use when setting up a Collector pipeline, configuring receivers, exporters, or processors, deploying a Collector to Kubernetes or Docker, or forwarding telemetry to Dynatrace. Triggers on requests involving collector, pipeline, OTLP receiver, exporter, or Dynatrace collector setup.
 license: MIT
 metadata:
-  author: dynatrace
+  author: dash0, dynatrace
   version: '1.0.0'
   workflow_type: 'advisory'
   supports-traces: "true"
