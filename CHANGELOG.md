@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.4.0 (2026-07-08)
+
+### Changed
+
+- rename plugin to `otel-for-dynatrace` and add `displayName` for cleaner display in Claude Code
+
+
 ## v1.3.0 (2026-05-19)
 
 ### Added

@@ -1,7 +1,8 @@
 {
   "name": "otel-for-dynatrace",
+  "displayName": "OTel for Dynatrace",
   "description": "OpenTelemetry skills and reference documentation for AI coding assistants",
-  "version": "v1.3.0",
+  "version": "v1.4.0",
   "author": {
     "name": "Dynatrace",
     "email": "john.gallagher@dynatrace.com"
