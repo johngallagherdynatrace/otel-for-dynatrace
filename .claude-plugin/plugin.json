@@ -1,5 +1,5 @@
 {
-  "name": "dynatrace-agent-skills",
+  "name": "otel-for-dynatrace",
   "description": "OpenTelemetry skills and reference documentation for AI coding assistants",
   "version": "v1.3.0",
   "author": {

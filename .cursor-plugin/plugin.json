@@ -1,6 +1,6 @@
 {
-  "name": "dynatrace-agent-skills",
-  "displayName": "Dynatrace OpenTelemetry skills",
+  "name": "otel-for-dynatrace",
+  "displayName": "OTel for Dynatrace",
   "description": "OpenTelemetry skills and reference documentation for AI coding assistants",
   "version": "v1.3.0",
   "author": {

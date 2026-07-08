@@ -1,5 +1,5 @@
 {
-  "name": "dynatrace/agent-skills",
+  "name": "dynatrace/otel-for-dynatrace",
   "version": "v1.3.0",
   "private": false,
   "summary": "Expert guidance for configuring and deploying the OpenTelemetry Collector. Use when setting up a Collector pipeline, configuring receivers, exporters, or processors, deploying a Collector to Kubernetes or Docker, or forwarding telemetry to Dynatrace. Triggers on requests involving collector, pipeline, OTLP receiver, exporter, or Dynatrace collector setup.",
