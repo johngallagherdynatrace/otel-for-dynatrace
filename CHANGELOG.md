@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.5.0 (2026-07-10)
+
+### Changed
+
+- rename `displayName` to `otel-dt` for kebab-case convention compliance
+
+
 ## v1.4.0 (2026-07-08)
 
 ### Changed
