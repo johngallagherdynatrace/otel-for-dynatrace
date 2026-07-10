@@ -1,6 +1,6 @@
 {
   "name": "otel-for-dynatrace",
-  "displayName": "OTel for Dynatrace",
+  "displayName": "otel-dt",
   "description": "OpenTelemetry skills and reference documentation for AI coding assistants",
   "version": "v1.4.0",
   "author": {
