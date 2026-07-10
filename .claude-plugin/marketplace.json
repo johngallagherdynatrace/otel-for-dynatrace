@@ -1,6 +1,6 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "otel-for-dynatrace",
+  "name": "otel-dt",
   "description": "OpenTelemetry skills and reference documentation for AI coding assistants, configured for Dynatrace",
   "owner": {
     "name": "Dynatrace",
@@ -8,7 +8,7 @@
   },
   "plugins": [
     {
-      "name": "otel-for-dynatrace",
+      "name": "otel-dt",
       "description": "Expert OTel instrumentation, Collector configuration, OTTL, and semantic convention guidance tuned for Dynatrace. Covers all major languages, Kubernetes deployment, the Dynatrace Operator, and Davis AI topology requirements.",
       "author": {
         "name": "Dynatrace"

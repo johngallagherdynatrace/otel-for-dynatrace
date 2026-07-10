@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.6.0 (2026-07-10)
+
+### Added
+
+- `review-instrumentation` skill — reviews OTel instrumentation changes (PR or current branch diff) for correctness and semantic convention compliance
+
+### Changed
+
+- rename plugin `name` to `otel-dt` so skills are invoked as `otel-dt:<skill>` instead of `otel-for-dynatrace:<skill>`
+
 ## v1.5.0 (2026-07-10)
 
 ### Changed
